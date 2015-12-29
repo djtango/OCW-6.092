@@ -1,23 +1,14 @@
 class Library {
     String address;
-    Book[] bookCollection;
-    int booksCounter;
+    ArrayList<Book> books;
 
     static final String openingTimes = "9 AM to 5 PM daily.";
 
     public Library(String libraryAddress) {
         address = libraryAddress;
-        bookCollection = new Book[4];
-        booksCounter = 0;
+        books = new ArrayList<Book>();
     }
 
-    private void incBooksCounter() {
-        booksCounter += 1;
-    }
-    public void addBook(Book newBook) {
-        bookCollection[booksCounter] = newBook;
-        incBooksCounter();
-    }
     public static void printOpeningHours() {
         System.out.println(Library.openingTimes);
     }
@@ -25,16 +16,19 @@ class Library {
         System.out.println(address);
     }
 
+    public void addBook(Book book) {
+        books.add(book);
+    }
     private Boolean isLibraryStocked() {
-        return booksCounter > 0;
+        return books.size() > 0;
     }
     public void printAvailableBooks() {
         if(isLibraryStocked()){
             int i;
-            for (i=0;i<booksCounter;i++) {
-                Book currentBook = bookCollection[i];
+            for (i=0;i<books.size();i++) {
+                Book currentBook = books.get(i);
                 if (!currentBook.isBorrowed()){
-                    System.out.println(bookCollection[i].getTitle());
+                    System.out.println(books.get(i).getTitle());
                 }
             }
         } else {
@@ -44,8 +38,8 @@ class Library {
     private int searchFor(String bookTitle) {
         int i;
         int bookIndex = -1;
-        for (i=0;i<booksCounter;i++) {
-            if (bookCollection[i].getTitle() == bookTitle) {
+        for (i=0;i<books.size();i++) {
+            if (books.get(i).getTitle() == bookTitle) {
                 bookIndex = i;
                 return bookIndex;
             }
@@ -67,7 +61,7 @@ class Library {
     public void borrowBook(String bookTitle) {
         int bookIndex = searchFor(bookTitle);
         if(isBookFound(bookIndex)) {
-            Book book = bookCollection[bookIndex];
+            Book book = books.get(bookIndex);
             checkout(book);
         } else {
             System.out.println("I'm sorry we do not have that book in this Library");
@@ -86,7 +80,7 @@ class Library {
     public void returnBook(String bookTitle) {
         int bookIndex = searchFor(bookTitle);
         if(isBookFound(bookIndex)) {
-            Book book = bookCollection[bookIndex];
+            Book book = books.get(bookIndex);
             checkin(book);
         } else {
             System.out.println("I'm sorry we do not have that book in this Library");
