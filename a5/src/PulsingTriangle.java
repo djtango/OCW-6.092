@@ -7,10 +7,12 @@ public class PulsingTriangle {
     int x;
     int y;
     Color color;
-    int xDirection = 0;
-    int yDirection = 0;
     int[] xPoints = new int[3];
     int[] yPoints = new int[3];
+    int xIncrement;
+    int yIncrement;
+    int xMax;
+    int yMax;
 
     final int N_VERTICES = 3;
     final int SIZE = 30;
@@ -18,14 +20,15 @@ public class PulsingTriangle {
         x = startX;
         y = startY;
         color = startColor;;
+        setTriangle();
     }
 
     public void draw(Graphics surface) {
         drawSurface(surface);
-        //pulseTriangle();
+        pulseTriangle();
+        detectLimit();
     }
     private void drawSurface(Graphics surface) {
-        setTriangle();
         surface.setColor(color);
         surface.fillPolygon(xPoints, yPoints, N_VERTICES);
         surface.setColor(Color.GREEN);
@@ -45,5 +48,29 @@ public class PulsingTriangle {
         yPoints[0] = y;
         yPoints[1] = y;
         yPoints[2] = y - (int)(SIZE * 0.866 + 0.5); // 0.866 ~ sqrt(3) / 2
+    }
+    private void pulseTriangle() {
+        xPoints[0] = xPoints[0] - xIncrement;
+        xPoints[1] = xPoints[1] + xIncrement;
+        yPoints[2] = yPoints[2] - yIncrement;
+    }
+    public void setPulseParams(double scaleFactor, double frequency) {
+        xMax = (int)(SIZE * (scaleFactor - 1)/ 2.0 + 0.5);
+        yMax = (int)(SIZE * (scaleFactor - 1) * 0.866 + 0.5);
+        setIncrements(frequency);
+    }
+    private void setIncrements(double frequency) {
+        xIncrement = frequencyToPixels(frequency, xMax);
+        yIncrement = frequencyToPixels(frequency, yMax);
+    }
+    private int frequencyToPixels(double frequency, int axisMax) {
+        return (int)(frequency * 50 * axisMax / 1000 + 0.5); // refresh rate = 50ms
+    }
+    private void detectLimit() {
+        if ((xPoints[0] <= x - xMax) ||
+                (xPoints[0] >= x)){
+            xIncrement = -xIncrement;
+            yIncrement = -yIncrement;
+        }
     }
 }

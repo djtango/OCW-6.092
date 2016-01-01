@@ -14,6 +14,7 @@ public class DrawGraphics {
         circle.setMovementVector(4,4);
 
         triangle = new PulsingTriangle(50, 250, Color.MAGENTA);
+        triangle.setPulseParams(5, 8);
     }
 
     public void draw(Graphics surface) {
